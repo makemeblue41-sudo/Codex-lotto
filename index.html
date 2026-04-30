@@ -642,13 +642,21 @@
     }
 
     @media (max-width: 900px) {
+      body {
+        overflow-x: hidden;
+      }
+
       .app {
+        min-height: 100vh;
+        width: 100%;
+        transform: none;
+        transform-origin: initial;
         flex-direction: column;
       }
 
       .sidebar {
         width: 100%;
-        padding: 14px 12px 12px;
+        padding: 12px 10px 10px;
         border-right: none;
         border-bottom: 1px solid rgba(148, 163, 184, 0.2);
       }
@@ -660,34 +668,46 @@
 
       .menu-list {
         flex-direction: row;
-        gap: 8px;
+        gap: 6px;
         flex-wrap: wrap;
       }
 
       .menu-btn {
         text-align: center;
-        padding: 10px 10px;
-        flex: 1 1 calc(50% - 4px);
+        padding: 9px 8px;
+        font-size: 0.82rem;
+        flex: 1 1 calc(50% - 3px);
       }
 
       main {
-        padding: 16px;
+        padding: 12px 10px 14px;
       }
 
       .content-card {
-        border-radius: 16px;
+        width: 100%;
+        padding: 12px 10px;
+        border-radius: 14px;
+      }
+
+      .page-title {
+        font-size: 1.16rem;
+      }
+
+      .page-subtitle {
+        font-size: 0.78rem;
+        margin-bottom: 10px;
       }
 
       .generator-layout {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 12px;
       }
 
       .generator-results-panel {
         border-left: none;
         border-top: 1px solid var(--border);
         padding-left: 0;
-        padding-top: 16px;
+        padding-top: 12px;
       }
 
       .ball-grid {
@@ -697,6 +717,23 @@
 
       .ball-btn {
         font-size: 0.62rem;
+      }
+
+      .group-title-row {
+        justify-content: space-between;
+      }
+
+      .group-hint {
+        font-size: 0.76rem;
+      }
+
+      .clear-group-btn {
+        padding: 4px 7px;
+        font-size: 0.68rem;
+      }
+
+      .generate-btn {
+        width: 100%;
       }
 
       .result-row {
@@ -719,6 +756,27 @@
 
       .absence-weeks {
         font-size: 0.8rem;
+      }
+
+      .frequency-list {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 480px) {
+      .ball-grid {
+        --ball-size: 23px;
+        --ball-gap: 2px;
+      }
+
+      .ball-btn {
+        font-size: 0.56rem;
+      }
+
+      .mini-ball {
+        width: 26px;
+        height: 26px;
+        font-size: 0.68rem;
       }
     }
   </style>
