@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로또번호 추첨기</title>
+  <style>
+    :root {
+      --bg: #eef3fb;
+      --panel: #ffffff;
+      --sidebar-bg: #0f172a;
+      --sidebar-active: #1d4ed8;
+      --text: #14213d;
+      --muted: #667085;
+      --border: #d9e1ef;
+      --warning: #d97706;
+      --danger: #b91c1c;
+      --success: #047857;
+      --shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, #ffffff 0%, transparent 38%),
+        radial-gradient(circle at 90% 90%, #e0ecff 0%, transparent 45%),
+        var(--bg);
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 240px;
+      padding: 24px 16px;
+      background: linear-gradient(165deg, #0f172a 0%, #111827 50%, #1f2937 100%);
+      color: #e5e7eb;
+      border-right: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .brand {
+      margin: 0 0 22px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu-btn {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: rgba(148, 163, 184, 0.08);
+      color: #dbeafe;
+      text-align: left;
+      font-size: 0.97rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .menu-btn:hover {
+      background: rgba(148, 163, 184, 0.18);
+      transform: translateY(-1px);
+    }
+
+    .menu-btn.active {
+      background: linear-gradient(145deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      border-color: rgba(191, 219, 254, 0.5);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    }
+
+    main {
+      flex: 1;
+      padding: 30px clamp(16px, 3vw, 36px);
+    }
+
+    .content-card {
+      width: min(1020px, 100%);
+      margin: 0 auto;
+      padding: clamp(18px, 2.6vw, 30px);
+      border-radius: 20px;
+      background: var(--panel);
+      border: 1px solid #edf2fb;
+      box-shadow: var(--shadow);
+    }
+
+    .page-title {
+      margin: 0 0 6px;
+      font-size: clamp(1.35rem, 2vw, 1.7rem);
+      font-weight: 800;
+    }
+
+    .page-subtitle {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .number-group {
+      margin-bottom: 20px;
+    }
+
+    .group-header {
+      margin: 0 0 10px;
+      font-size: 1.06rem;
+      font-weight: 700;
+    }
+
+    .group-hint {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .ball-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+      gap: 10px;
+    }
+
+    .ball-btn {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto;
+      border: none;
+      border-radius: 50%;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #102a43;
+      cursor: pointer;
+      position: relative;
+      background: radial-gradient(circle at 28% 25%, #fffbe9 0%, #ffe39f 45%, #f5b53f 100%);
+      box-shadow:
+        inset -6px -8px 12px rgba(126, 84, 11, 0.28),
+        inset 6px 8px 14px rgba(255, 255, 255, 0.7),
+        0 6px 10px rgba(15, 23, 42, 0.17);
+      transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
+    }
+
+    .ball-btn:hover {
+      transform: translateY(-2px);
+      filter: saturate(1.05);
+    }
+
+    .ball-btn:active {
+      transform: translateY(0);
+    }
+
+    .ball-btn.include-selected {
+      color: #f8fafc;
+      background: radial-gradient(circle at 30% 28%, #dbeafe 0%, #3b82f6 52%, #1d4ed8 100%);
+      box-shadow:
+        inset -6px -8px 12px rgba(9, 43, 130, 0.35),
+        inset 6px 8px 14px rgba(236, 245, 255, 0.45),
+        0 8px 14px rgba(37, 99, 235, 0.36);
+    }
+
+    .ball-btn.exclude-selected {
+      color: #fff7ed;
+      background: radial-gradient(circle at 30% 28%, #fee2e2 0%, #ef4444 52%, #b91c1c 100%);
+      box-shadow:
+        inset -6px -8px 12px rgba(99, 11, 11, 0.38),
+        inset 6px 8px 14px rgba(255, 243, 243, 0.36),
+        0 8px 14px rgba(185, 28, 28, 0.33);
+    }
+
+    .generate-btn {
+      margin-top: 8px;
+      padding: 13px 20px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(140deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%);
+      color: #f8fafc;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(13, 148, 136, 0.26);
+      transition: transform 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .generate-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(13, 148, 136, 0.32);
+    }
+
+    .generate-btn:active {
+      transform: translateY(0);
+    }
+
+    .message {
+      min-height: 24px;
+      margin: 14px 0 10px;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .message.warning {
+      color: var(--danger);
+    }
+
+    .message.info {
+      color: var(--success);
+    }
+
+    .results {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .result-row {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fbff;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .result-label {
+      min-width: 56px;
+      font-weight: 700;
+      color: #1e3a8a;
+    }
+
+    .result-balls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .mini-ball {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: #0f172a;
+      background: radial-gradient(circle at 30% 28%, #fffbe9 0%, #ffe39f 44%, #f5b53f 100%);
+      box-shadow:
+        inset -4px -5px 8px rgba(126, 84, 11, 0.22),
+        inset 4px 5px 8px rgba(255, 255, 255, 0.7),
+        0 3px 8px rgba(15, 23, 42, 0.14);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .stats-placeholder {
+      padding: 50px 10px;
+      text-align: center;
+      color: #334155;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 14px 12px 12px;
+        border-right: none;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      }
+
+      .brand {
+        margin: 0 0 10px;
+        font-size: 1rem;
+      }
+
+      .menu-list {
+        flex-direction: row;
+        gap: 8px;
+      }
+
+      .menu-btn {
+        text-align: center;
+        padding: 10px 10px;
+      }
+
+      main {
+        padding: 16px;
+      }
+
+      .content-card {
+        border-radius: 16px;
+      }
+
+      .ball-grid {
+        grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+        gap: 8px;
+      }
+
+      .ball-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 0.82rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h1 class="brand">로또번호 추첨기</h1>
+      <nav class="menu-list" aria-label="메뉴">
+        <button class="menu-btn active" data-menu="generator" type="button">번호생성기</button>
+        <button class="menu-btn" data-menu="stats" type="button">통계</button>
+      </nav>
+    </aside>
+
+    <main>
+      <section id="generatorView" class="content-card">
+        <h2 class="page-title">번호생성기</h2>
+        <p class="page-subtitle">포함수/제외수를 선택한 뒤 로또 번호 5세트를 생성하세요.</p>
+
+        <div class="number-group">
+          <h3 class="group-header">포함수</h3>
+          <p class="group-hint">선택한 번호는 결과에 반드시 포함됩니다.</p>
+          <div id="includeGrid" class="ball-grid" aria-label="포함수 선택"></div>
+        </div>
+
+        <div class="number-group">
+          <h3 class="group-header">제외수</h3>
+          <p class="group-hint">선택한 번호는 결과에서 반드시 제외됩니다.</p>
+          <div id="excludeGrid" class="ball-grid" aria-label="제외수 선택"></div>
+        </div>
+
+        <button id="generateBtn" class="generate-btn" type="button">번호 생성하기</button>
+        <div id="message" class="message" role="status" aria-live="polite"></div>
+        <div id="results" class="results" aria-label="생성 결과"></div>
+      </section>
+
+      <section id="statsView" class="content-card hidden">
+        <div class="stats-placeholder">업데이트 중</div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // 화면 상태와 선택 번호 상태를 한 곳에서 관리한다.
+    const state = {
+      activeMenu: "generator",
+      includeSet: new Set(),
+      excludeSet: new Set(),
+      resultSets: [],
+      alertMessage: ""
+    };
+
+    const menuButtons = document.querySelectorAll(".menu-btn");
+    const generatorView = document.getElementById("generatorView");
+    const statsView = document.getElementById("statsView");
+    const includeGrid = document.getElementById("includeGrid");
+    const excludeGrid = document.getElementById("excludeGrid");
+    const generateBtn = document.getElementById("generateBtn");
+    const messageEl = document.getElementById("message");
+    const resultsEl = document.getElementById("results");
+
+    // 1~45 번호 공 버튼을 만들어 각 영역에 렌더링한다.
+    function buildBallGrid(container, type) {
+      const fragment = document.createDocumentFragment();
+
+      for (let num = 1; num <= 45; num += 1) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "ball-btn";
+        button.textContent = String(num);
+        button.dataset.number = String(num);
+        button.dataset.type = type;
+        button.setAttribute("aria-label", `${type === "include" ? "포함수" : "제외수"} ${num}`);
+        fragment.appendChild(button);
+      }
+
+      container.appendChild(fragment);
+    }
+
+    // 포함수/제외수 선택 상태를 버튼 스타일에 반영한다.
+    function renderBallSelections() {
+      includeGrid.querySelectorAll(".ball-btn").forEach((btn) => {
+        const number = Number(btn.dataset.number);
+        btn.classList.toggle("include-selected", state.includeSet.has(number));
+      });
+
+      excludeGrid.querySelectorAll(".ball-btn").forEach((btn) => {
+        const number = Number(btn.dataset.number);
+        btn.classList.toggle("exclude-selected", state.excludeSet.has(number));
+      });
+    }
+
+    function renderMenu() {
+      menuButtons.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.menu === state.activeMenu);
+      });
+
+      generatorView.classList.toggle("hidden", state.activeMenu !== "generator");
+      statsView.classList.toggle("hidden", state.activeMenu !== "stats");
+    }
+
+    function showMessage(text, mode = "warning") {
+      state.alertMessage = text;
+      messageEl.textContent = text;
+      messageEl.className = `message ${mode}`;
+    }
+
+    function clearMessage() {
+      state.alertMessage = "";
+      messageEl.textContent = "";
+      messageEl.className = "message";
+    }
+
+    function renderResults() {
+      resultsEl.innerHTML = "";
+
+      if (state.resultSets.length === 0) {
+        const emptyText = document.createElement("p");
+        emptyText.className = "group-hint";
+        emptyText.textContent = "생성된 번호가 없습니다.";
+        resultsEl.appendChild(emptyText);
+        return;
+      }
+
+      state.resultSets.forEach((set, idx) => {
+        const row = document.createElement("div");
+        row.className = "result-row";
+
+        const label = document.createElement("span");
+        label.className = "result-label";
+        label.textContent = `${idx + 1}세트`;
+
+        const balls = document.createElement("div");
+        balls.className = "result-balls";
+
+        set.forEach((number) => {
+          const miniBall = document.createElement("span");
+          miniBall.className = "mini-ball";
+          miniBall.textContent = String(number);
+          balls.appendChild(miniBall);
+        });
+
+        row.appendChild(label);
+        row.appendChild(balls);
+        resultsEl.appendChild(row);
+      });
+    }
+
+    // 배열에서 count개를 겹치지 않게 무작위로 뽑는다.
+    function pickRandomUnique(source, count) {
+      const pool = [...source];
+
+      for (let i = pool.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+
+      return pool.slice(0, count);
+    }
+
+    // 번호 버튼 클릭 시 포함수/제외수 중복을 자동 해제해 충돌을 막는다.
+    function handleBallClick(event) {
+      const target = event.target;
+      if (!(target instanceof HTMLButtonElement)) {
+        return;
+      }
+
+      const number = Number(target.dataset.number);
+      const type = target.dataset.type;
+
+      if (type === "include") {
+        if (state.includeSet.has(number)) {
+          state.includeSet.delete(number);
+        } else {
+          state.includeSet.add(number);
+          state.excludeSet.delete(number);
+        }
+      } else {
+        if (state.excludeSet.has(number)) {
+          state.excludeSet.delete(number);
+        } else {
+          state.excludeSet.add(number);
+          state.includeSet.delete(number);
+        }
+      }
+
+      clearMessage();
+      renderBallSelections();
+    }
+
+    function generateSets() {
+      const includeNumbers = [...state.includeSet];
+      const includeCount = includeNumbers.length;
+
+      if (includeCount > 6) {
+        state.resultSets = [];
+        renderResults();
+        showMessage("포함수는 최대 6개까지 선택할 수 있습니다.", "warning");
+        return;
+      }
+
+      const needed = 6 - includeCount;
+      const candidatePool = [];
+
+      for (let num = 1; num <= 45; num += 1) {
+        if (!state.includeSet.has(num) && !state.excludeSet.has(num)) {
+          candidatePool.push(num);
+        }
+      }
+
+      if (candidatePool.length < needed) {
+        state.resultSets = [];
+        renderResults();
+        showMessage("포함수/제외수 조건으로는 번호를 6개 채울 수 없습니다.", "warning");
+        return;
+      }
+
+      const sets = [];
+
+      for (let i = 0; i < 5; i += 1) {
+        const randomNumbers = pickRandomUnique(candidatePool, needed);
+        const oneSet = [...includeNumbers, ...randomNumbers].sort((a, b) => a - b);
+        sets.push(oneSet);
+      }
+
+      state.resultSets = sets;
+      renderResults();
+      showMessage("번호 5세트를 생성했습니다.", "info");
+    }
+
+    function initMenu() {
+      menuButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.activeMenu = btn.dataset.menu || "generator";
+          renderMenu();
+        });
+      });
+    }
+
+    function init() {
+      buildBallGrid(includeGrid, "include");
+      buildBallGrid(excludeGrid, "exclude");
+      includeGrid.addEventListener("click", handleBallClick);
+      excludeGrid.addEventListener("click", handleBallClick);
+      generateBtn.addEventListener("click", generateSets);
+      initMenu();
+      renderMenu();
+      renderBallSelections();
+      renderResults();
+    }
+
+    init();
+  </script>
+</body>
+</html>
