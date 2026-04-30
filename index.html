@@ -6,6 +6,7 @@
   <title>로또번호 추첨기</title>
   <style>
     :root {
+      --ui-scale: 1.3;
       --bg: #eef3fb;
       --panel: #ffffff;
       --sidebar-bg: #0f172a;
@@ -34,12 +35,15 @@
     }
 
     .app {
-      min-height: 100vh;
+      min-height: calc(100vh / var(--ui-scale));
       display: flex;
+      width: calc(100% / var(--ui-scale));
+      transform: scale(var(--ui-scale));
+      transform-origin: top left;
     }
 
     .sidebar {
-      width: 240px;
+      width: 220px;
       padding: 24px 16px;
       background: linear-gradient(165deg, #0f172a 0%, #111827 50%, #1f2937 100%);
       color: #e5e7eb;
@@ -87,13 +91,13 @@
 
     main {
       flex: 1;
-      padding: 30px clamp(16px, 3vw, 36px);
+      padding: 18px clamp(12px, 2.2vw, 24px);
     }
 
     .content-card {
-      width: min(1020px, 100%);
+      width: min(1100px, 100%);
       margin: 0 auto;
-      padding: clamp(18px, 2.6vw, 30px);
+      padding: clamp(14px, 2vw, 22px);
       border-radius: 20px;
       background: var(--panel);
       border: 1px solid #edf2fb;
@@ -107,40 +111,85 @@
     }
 
     .page-subtitle {
-      margin: 0 0 22px;
+      margin: 0 0 14px;
       color: var(--muted);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+    }
+
+    .generator-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(240px, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .generator-controls {
+      min-width: 0;
+    }
+
+    .generator-results-panel {
+      min-width: 0;
+      border-left: 1px solid var(--border);
+      padding-left: 14px;
     }
 
     .number-group {
-      margin-bottom: 20px;
+      margin-bottom: 14px;
+    }
+
+    .group-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 6px;
+      margin-bottom: 6px;
     }
 
     .group-header {
-      margin: 0 0 10px;
-      font-size: 1.06rem;
+      margin: 0;
+      font-size: 1rem;
       font-weight: 700;
     }
 
+    .clear-group-btn {
+      padding: 4px 8px;
+      border: 1px solid #cad7ee;
+      border-radius: 7px;
+      background: #ffffff;
+      color: #334155;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .clear-group-btn:hover {
+      background: #f2f6fd;
+      border-color: #b8c9ea;
+    }
+
     .group-hint {
-      margin: 0 0 14px;
+      margin: 0 0 8px;
       color: var(--muted);
-      font-size: 0.88rem;
+      font-size: 0.82rem;
     }
 
     .ball-grid {
+      --ball-size: 40px;
+      --ball-gap: 6px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(10, var(--ball-size));
+      gap: var(--ball-gap);
+      justify-content: start;
     }
 
     .ball-btn {
-      width: 50px;
-      height: 50px;
+      width: var(--ball-size);
+      height: var(--ball-size);
       margin: 0 auto;
       border: none;
       border-radius: 50%;
-      font-size: 0.9rem;
+      font-size: 0.78rem;
       font-weight: 700;
       color: #102a43;
       cursor: pointer;
@@ -181,13 +230,13 @@
     }
 
     .generate-btn {
-      margin-top: 8px;
-      padding: 13px 20px;
+      margin-top: 4px;
+      padding: 10px 16px;
       border: none;
       border-radius: 12px;
       background: linear-gradient(140deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%);
       color: #f8fafc;
-      font-size: 1rem;
+      font-size: 0.92rem;
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 10px 20px rgba(13, 148, 136, 0.26);
@@ -204,9 +253,9 @@
     }
 
     .message {
-      min-height: 24px;
-      margin: 14px 0 10px;
-      font-size: 0.92rem;
+      min-height: 20px;
+      margin: 8px 0 8px;
+      font-size: 0.86rem;
       font-weight: 600;
     }
 
@@ -219,24 +268,40 @@
     }
 
     .results {
-      margin-top: 12px;
+      margin-top: 6px;
       display: grid;
-      gap: 10px;
+      gap: 8px;
+    }
+
+    .results-title {
+      margin: 0 0 6px;
+      font-size: 1rem;
+      font-weight: 700;
     }
 
     .result-row {
-      padding: 10px 12px;
+      padding: 8px 10px;
       border: 1px solid var(--border);
       border-radius: 12px;
       background: #f8fbff;
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .result-main {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
     }
 
     .result-label {
-      min-width: 56px;
+      min-width: 48px;
+      font-size: 0.9rem;
       font-weight: 700;
       color: #1e3a8a;
     }
@@ -244,22 +309,82 @@
     .result-balls {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
+    }
+
+    .reroll-btn {
+      flex-shrink: 0;
+      margin-left: auto;
+      padding: 6px 10px;
+      border: 1px solid #c7d7f2;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #1d4ed8;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .reroll-btn:hover {
+      background: #eaf1ff;
+      border-color: #aac3ee;
     }
 
     .mini-ball {
-      width: 34px;
-      height: 34px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       display: grid;
       place-items: center;
-      font-size: 0.83rem;
+      font-size: 0.76rem;
       font-weight: 700;
-      color: #0f172a;
-      background: radial-gradient(circle at 30% 28%, #fffbe9 0%, #ffe39f 44%, #f5b53f 100%);
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      background: radial-gradient(circle at 30% 28%, #ffe17f 0%, #f8b400 46%, #d59400 100%);
       box-shadow:
-        inset -4px -5px 8px rgba(126, 84, 11, 0.22),
-        inset 4px 5px 8px rgba(255, 255, 255, 0.7),
+        inset -4px -5px 8px rgba(135, 94, 15, 0.3),
+        inset 4px 5px 8px rgba(255, 248, 203, 0.62),
+        0 3px 8px rgba(15, 23, 42, 0.14);
+    }
+
+    .mini-ball.range-1 {
+      background: radial-gradient(circle at 30% 28%, #ffe17f 0%, #f8b400 46%, #d59400 100%);
+      box-shadow:
+        inset -4px -5px 8px rgba(135, 94, 15, 0.3),
+        inset 4px 5px 8px rgba(255, 248, 203, 0.62),
+        0 3px 8px rgba(15, 23, 42, 0.14);
+    }
+
+    .mini-ball.range-2 {
+      background: radial-gradient(circle at 30% 28%, #86dcff 0%, #4db8eb 48%, #2a95c8 100%);
+      box-shadow:
+        inset -4px -5px 8px rgba(24, 111, 150, 0.35),
+        inset 4px 5px 8px rgba(220, 244, 255, 0.58),
+        0 3px 8px rgba(15, 23, 42, 0.14);
+    }
+
+    .mini-ball.range-3 {
+      background: radial-gradient(circle at 30% 28%, #ff9fa7 0%, #f5656f 48%, #df4a55 100%);
+      box-shadow:
+        inset -4px -5px 8px rgba(145, 47, 55, 0.33),
+        inset 4px 5px 8px rgba(255, 224, 228, 0.55),
+        0 3px 8px rgba(15, 23, 42, 0.14);
+    }
+
+    .mini-ball.range-4 {
+      background: radial-gradient(circle at 30% 28%, #c6cad1 0%, #969da7 48%, #787f88 100%);
+      box-shadow:
+        inset -4px -5px 8px rgba(83, 90, 101, 0.38),
+        inset 4px 5px 8px rgba(236, 240, 246, 0.5),
+        0 3px 8px rgba(15, 23, 42, 0.14);
+    }
+
+    .mini-ball.range-5 {
+      background: radial-gradient(circle at 30% 28%, #b7ee70 0%, #8ecf3a 48%, #70ad23 100%);
+      box-shadow:
+        inset -4px -5px 8px rgba(75, 121, 26, 0.35),
+        inset 4px 5px 8px rgba(234, 252, 208, 0.55),
         0 3px 8px rgba(15, 23, 42, 0.14);
     }
 
@@ -267,12 +392,253 @@
       display: none;
     }
 
-    .stats-placeholder {
-      padding: 50px 10px;
-      text-align: center;
-      color: #334155;
-      font-size: 1.4rem;
+    .stats-status {
+      min-height: 20px;
+      margin: 4px 0 10px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .stats-status.loading {
+      color: #1d4ed8;
+    }
+
+    .stats-status.warning {
+      color: var(--danger);
+    }
+
+    .stats-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .stats-item {
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fbff;
+    }
+
+    .stats-item-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .stats-round {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #1e3a8a;
+    }
+
+    .stats-date {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .stats-number-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .stats-plus {
+      font-size: 0.82rem;
       font-weight: 700;
+      color: #475569;
+      margin: 0 1px;
+    }
+
+    .stats-empty {
+      padding: 14px 10px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      text-align: center;
+      color: #64748b;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: #f8fafc;
+    }
+
+    .stats-sentinel {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px dashed #c5d3eb;
+      border-radius: 10px;
+      text-align: center;
+      color: #5b6b82;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #f8fbff;
+    }
+
+    .frequency-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .frequency-label {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .frequency-select {
+      min-width: 150px;
+      padding: 7px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 0.82rem;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .frequency-select:focus {
+      border-color: #4f8fe6;
+      box-shadow: 0 0 0 3px rgba(79, 143, 230, 0.17);
+    }
+
+    .frequency-list {
+      display: grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 8px 6px;
+    }
+
+    .frequency-list .stats-empty {
+      grid-column: 1 / -1;
+    }
+
+    .frequency-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px 4px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f8fbff;
+    }
+
+    .frequency-count-under {
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: #334155;
+      line-height: 1.1;
+      text-align: center;
+    }
+
+    .absence-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .absence-row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) 56px;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f8fbff;
+    }
+
+    .absence-bar-track {
+      height: 10px;
+      width: 100%;
+      border-radius: 999px;
+      background: #d8dee8;
+      overflow: hidden;
+    }
+
+    .absence-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff5b9c 0%, #ec4899 100%);
+      box-shadow: 0 0 0 1px rgba(236, 72, 153, 0.15);
+    }
+
+    .absence-weeks {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #475569;
+      text-align: right;
+    }
+
+    .absence-list .stats-empty {
+      width: 100%;
+    }
+
+    /* 화면 높이가 낮은 데스크톱에서 스크롤 없이 버튼까지 보이도록 추가 압축한다. */
+    @media (min-width: 901px) and (max-height: 920px) {
+      .sidebar {
+        padding: 18px 14px;
+      }
+
+      main {
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+
+      .content-card {
+        padding: 12px 14px;
+      }
+
+      .page-title {
+        font-size: 1.28rem;
+      }
+
+      .page-subtitle {
+        margin-bottom: 10px;
+        font-size: 0.84rem;
+      }
+
+      .number-group {
+        margin-bottom: 10px;
+      }
+
+      .group-hint {
+        margin-bottom: 6px;
+      }
+
+      .clear-group-btn {
+        padding: 3px 7px;
+        font-size: 0.68rem;
+      }
+
+      .ball-grid {
+        --ball-size: 34px;
+        --ball-gap: 5px;
+      }
+
+      .ball-btn {
+        font-size: 0.72rem;
+      }
+
+      .generate-btn {
+        padding: 8px 12px;
+        font-size: 0.86rem;
+      }
+
+      .message {
+        min-height: 18px;
+        margin-top: 6px;
+      }
+
+      .reroll-btn {
+        padding: 5px 8px;
+        font-size: 0.72rem;
+      }
     }
 
     @media (max-width: 900px) {
@@ -295,11 +661,13 @@
       .menu-list {
         flex-direction: row;
         gap: 8px;
+        flex-wrap: wrap;
       }
 
       .menu-btn {
         text-align: center;
         padding: 10px 10px;
+        flex: 1 1 calc(50% - 4px);
       }
 
       main {
@@ -310,15 +678,47 @@
         border-radius: 16px;
       }
 
+      .generator-layout {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .generator-results-panel {
+        border-left: none;
+        border-top: 1px solid var(--border);
+        padding-left: 0;
+        padding-top: 16px;
+      }
+
       .ball-grid {
-        grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-        gap: 8px;
+        --ball-size: 26px;
+        --ball-gap: 3px;
       }
 
       .ball-btn {
-        width: 42px;
-        height: 42px;
-        font-size: 0.82rem;
+        font-size: 0.62rem;
+      }
+
+      .result-row {
+        flex-wrap: wrap;
+      }
+
+      .result-main {
+        width: 100%;
+      }
+
+      .reroll-btn {
+        margin-left: 0;
+      }
+
+      .absence-row {
+        grid-template-columns: 30px minmax(0, 1fr) 48px;
+        gap: 8px;
+        padding: 7px 8px;
+      }
+
+      .absence-weeks {
+        font-size: 0.8rem;
       }
     }
   </style>
@@ -329,7 +729,9 @@
       <h1 class="brand">로또번호 추첨기</h1>
       <nav class="menu-list" aria-label="메뉴">
         <button class="menu-btn active" data-menu="generator" type="button">번호생성기</button>
-        <button class="menu-btn" data-menu="stats" type="button">통계</button>
+        <button class="menu-btn" data-menu="stats" type="button">역대 당첨번호</button>
+        <button class="menu-btn" data-menu="frequency" type="button">출현 횟수</button>
+        <button class="menu-btn" data-menu="absence" type="button">미출현 번호</button>
       </nav>
     </aside>
 
@@ -338,29 +740,75 @@
         <h2 class="page-title">번호생성기</h2>
         <p class="page-subtitle">포함수/제외수를 선택한 뒤 로또 번호 5세트를 생성하세요.</p>
 
-        <div class="number-group">
-          <h3 class="group-header">포함수</h3>
-          <p class="group-hint">선택한 번호는 결과에 반드시 포함됩니다.</p>
-          <div id="includeGrid" class="ball-grid" aria-label="포함수 선택"></div>
-        </div>
+        <div class="generator-layout">
+          <div class="generator-controls">
+            <div class="number-group">
+              <div class="group-title-row">
+                <h3 class="group-header">포함수</h3>
+                <button id="includeClearBtn" class="clear-group-btn" type="button">모두해제</button>
+              </div>
+              <p class="group-hint">선택한 번호는 결과에 반드시 포함됩니다.</p>
+              <div id="includeGrid" class="ball-grid" aria-label="포함수 선택"></div>
+            </div>
 
-        <div class="number-group">
-          <h3 class="group-header">제외수</h3>
-          <p class="group-hint">선택한 번호는 결과에서 반드시 제외됩니다.</p>
-          <div id="excludeGrid" class="ball-grid" aria-label="제외수 선택"></div>
-        </div>
+            <div class="number-group">
+              <div class="group-title-row">
+                <h3 class="group-header">제외수</h3>
+                <button id="excludeClearBtn" class="clear-group-btn" type="button">모두해제</button>
+              </div>
+              <p class="group-hint">선택한 번호는 결과에서 반드시 제외됩니다.</p>
+              <div id="excludeGrid" class="ball-grid" aria-label="제외수 선택"></div>
+            </div>
 
-        <button id="generateBtn" class="generate-btn" type="button">번호 생성하기</button>
-        <div id="message" class="message" role="status" aria-live="polite"></div>
-        <div id="results" class="results" aria-label="생성 결과"></div>
+            <button id="generateBtn" class="generate-btn" type="button">번호 생성하기</button>
+            <div id="message" class="message" role="status" aria-live="polite"></div>
+          </div>
+
+          <div class="generator-results-panel">
+            <h3 class="results-title">생성 결과</h3>
+            <p class="group-hint">버튼을 누를 때마다 최신 5세트를 표시합니다.</p>
+            <div id="results" class="results" aria-label="생성 결과"></div>
+          </div>
+        </div>
       </section>
 
       <section id="statsView" class="content-card hidden">
-        <div class="stats-placeholder">업데이트 중</div>
+        <h2 class="page-title">역대 당첨번호</h2>
+        <p class="page-subtitle">최신 30회차부터 시작해, 아래로 스크롤하면 이전 회차를 30개씩 추가로 표시합니다.</p>
+        <div id="statsStatus" class="stats-status">통계 데이터를 준비 중입니다.</div>
+        <div id="statsList" class="stats-list" aria-label="역대 당첨번호 목록"></div>
+        <div id="statsSentinel" class="stats-sentinel">아래로 스크롤하면 이전 회차를 더 불러옵니다.</div>
+      </section>
+
+      <section id="frequencyView" class="content-card hidden">
+        <h2 class="page-title">출현 횟수</h2>
+        <p class="page-subtitle">선택한 구간의 당첨번호(보너스 제외) 출현 횟수를 많은 순으로 보여줍니다.</p>
+        <div class="frequency-toolbar">
+          <label for="frequencyRange" class="frequency-label">조회 구간</label>
+          <select id="frequencyRange" class="frequency-select" aria-label="출현 횟수 조회 구간">
+            <option value="5">최근 5회차</option>
+            <option value="10">최근 10회차</option>
+            <option value="15">최근 15회차</option>
+            <option value="30">최근 30회차</option>
+            <option value="50">최근 50회차</option>
+            <option value="100">최근 100회차</option>
+            <option value="all" selected>전체회차</option>
+          </select>
+        </div>
+        <div id="frequencyStatus" class="stats-status">출현 횟수 데이터를 준비 중입니다.</div>
+        <div id="frequencyList" class="frequency-list" aria-label="출현 횟수 목록"></div>
+      </section>
+
+      <section id="absenceView" class="content-card hidden">
+        <h2 class="page-title">미출현 번호</h2>
+        <p class="page-subtitle">최신 회차 기준으로 각 번호가 최근 몇 주째 나오지 않았는지 내림차순으로 보여줍니다.</p>
+        <div id="absenceStatus" class="stats-status">미출현 번호 데이터를 준비 중입니다.</div>
+        <div id="absenceList" class="absence-list" aria-label="미출현 번호 목록"></div>
       </section>
     </main>
   </div>
 
+  <script src="./lotto-history-snapshot.js"></script>
   <script>
     // 화면 상태와 선택 번호 상태를 한 곳에서 관리한다.
     const state = {
@@ -368,17 +816,42 @@
       includeSet: new Set(),
       excludeSet: new Set(),
       resultSets: [],
-      alertMessage: ""
+      alertMessage: "",
+      statsHistory: [],
+      statsLoaded: false,
+      statsLoading: false,
+      statsError: "",
+      statsWarning: "",
+      statsVisibleCount: 30,
+      frequencyRange: "all"
     };
+
+    const LOTTO_API_ENDPOINT = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=";
+    const STATS_SNAPSHOT_URL = "./lotto-history.json";
+    const STATS_CACHE_KEY = "lotto-history-rounds-v2";
+    const STATS_PAGE_SIZE = 30;
 
     const menuButtons = document.querySelectorAll(".menu-btn");
     const generatorView = document.getElementById("generatorView");
     const statsView = document.getElementById("statsView");
+    const frequencyView = document.getElementById("frequencyView");
+    const absenceView = document.getElementById("absenceView");
     const includeGrid = document.getElementById("includeGrid");
     const excludeGrid = document.getElementById("excludeGrid");
+    const includeClearBtn = document.getElementById("includeClearBtn");
+    const excludeClearBtn = document.getElementById("excludeClearBtn");
     const generateBtn = document.getElementById("generateBtn");
     const messageEl = document.getElementById("message");
     const resultsEl = document.getElementById("results");
+    const statsStatusEl = document.getElementById("statsStatus");
+    const statsListEl = document.getElementById("statsList");
+    const statsSentinelEl = document.getElementById("statsSentinel");
+    const frequencyRangeEl = document.getElementById("frequencyRange");
+    const frequencyStatusEl = document.getElementById("frequencyStatus");
+    const frequencyListEl = document.getElementById("frequencyList");
+    const absenceStatusEl = document.getElementById("absenceStatus");
+    const absenceListEl = document.getElementById("absenceList");
+    let statsObserver = null;
 
     // 1~45 번호 공 버튼을 만들어 각 영역에 렌더링한다.
     function buildBallGrid(container, type) {
@@ -418,6 +891,8 @@
 
       generatorView.classList.toggle("hidden", state.activeMenu !== "generator");
       statsView.classList.toggle("hidden", state.activeMenu !== "stats");
+      frequencyView.classList.toggle("hidden", state.activeMenu !== "frequency");
+      absenceView.classList.toggle("hidden", state.activeMenu !== "absence");
     }
 
     function showMessage(text, mode = "warning") {
@@ -430,6 +905,561 @@
       state.alertMessage = "";
       messageEl.textContent = "";
       messageEl.className = "message";
+    }
+
+    function setStatsStatus(text, mode = "") {
+      statsStatusEl.textContent = text;
+      statsStatusEl.className = `stats-status${mode ? ` ${mode}` : ""}`;
+    }
+
+    function setFrequencyStatus(text, mode = "") {
+      frequencyStatusEl.textContent = text;
+      frequencyStatusEl.className = `stats-status${mode ? ` ${mode}` : ""}`;
+    }
+
+    function setAbsenceStatus(text, mode = "") {
+      absenceStatusEl.textContent = text;
+      absenceStatusEl.className = `stats-status${mode ? ` ${mode}` : ""}`;
+    }
+
+    function loadStatsCache() {
+      try {
+        const raw = localStorage.getItem(STATS_CACHE_KEY);
+        if (!raw) {
+          return;
+        }
+
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed.rounds)) {
+          return;
+        }
+
+        const sanitized = parsed.rounds
+          .map((item) => ({
+            round: Number(item.round),
+            date: String(item.date || ""),
+            numbers: Array.isArray(item.numbers) ? item.numbers.map((n) => Number(n)).filter((n) => Number.isInteger(n)) : [],
+            bonus: Number(item.bonus)
+          }))
+          .filter((item) => Number.isInteger(item.round) && item.round > 0 && item.numbers.length === 6 && Number.isInteger(item.bonus))
+          .sort((a, b) => a.round - b.round);
+
+        state.statsHistory = sanitized;
+        state.statsLoaded = sanitized.length > 0;
+      } catch (_) {
+        // 캐시 파싱 실패 시 무시하고 새로 로드한다.
+      }
+    }
+
+    function normalizeStatsRounds(rounds) {
+      return rounds
+        .map((item) => ({
+          round: Number(item.round),
+          date: String(item.date || ""),
+          numbers: Array.isArray(item.numbers) ? item.numbers.map((n) => Number(n)).filter((n) => Number.isInteger(n)) : [],
+          bonus: Number(item.bonus)
+        }))
+        .filter((item) => Number.isInteger(item.round) && item.round > 0 && item.numbers.length === 6 && Number.isInteger(item.bonus))
+        .sort((a, b) => a.round - b.round);
+    }
+
+    async function loadStatsSnapshot() {
+      // 1) file:// 환경에서도 안정적으로 동작하도록 JS 전역 스냅샷을 먼저 사용한다.
+      const inlineSnapshot = typeof window !== "undefined" ? window.LOTTO_HISTORY_SNAPSHOT : null;
+      if (inlineSnapshot && Array.isArray(inlineSnapshot.rounds)) {
+        const sanitizedInline = normalizeStatsRounds(inlineSnapshot.rounds);
+        if (sanitizedInline.length > 0) {
+          state.statsHistory = sanitizedInline;
+          state.statsLoaded = true;
+          saveStatsCache();
+          return;
+        }
+      }
+
+      // 2) 전역 스냅샷이 없을 때만 JSON 파일 fetch를 시도한다.
+      const response = await fetch(STATS_SNAPSHOT_URL, { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("로컬 스냅샷 파일을 읽을 수 없습니다.");
+      }
+
+      const parsed = await response.json();
+      if (!parsed || !Array.isArray(parsed.rounds)) {
+        throw new Error("로컬 스냅샷 형식이 올바르지 않습니다.");
+      }
+
+      const sanitized = normalizeStatsRounds(parsed.rounds);
+
+      if (sanitized.length === 0) {
+        throw new Error("로컬 스냅샷에 유효한 회차 데이터가 없습니다.");
+      }
+
+      state.statsHistory = sanitized;
+      state.statsLoaded = true;
+      saveStatsCache();
+    }
+
+    function saveStatsCache() {
+      try {
+        localStorage.setItem(
+          STATS_CACHE_KEY,
+          JSON.stringify({
+            savedAt: new Date().toISOString(),
+            rounds: state.statsHistory
+          })
+        );
+      } catch (_) {
+        // 저장 공간 부족 등의 오류는 무시한다.
+      }
+    }
+
+    function mergeStatsHistory(nextRounds) {
+      const map = new Map();
+      state.statsHistory.forEach((item) => {
+        map.set(item.round, item);
+      });
+      nextRounds.forEach((item) => {
+        map.set(item.round, item);
+      });
+      state.statsHistory = [...map.values()].sort((a, b) => a.round - b.round);
+    }
+
+    async function fetchLottoRound(roundNo) {
+      const response = await fetch(`${LOTTO_API_ENDPOINT}${roundNo}`, { cache: "no-store" });
+      const raw = await response.text();
+
+      if (raw.trim().startsWith("<")) {
+        throw new Error("동행복권 서버가 JSON 대신 차단/대기 HTML을 반환했습니다.");
+      }
+
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch (_) {
+        throw new Error("동행복권 응답이 JSON 형식이 아니어서 데이터를 읽을 수 없습니다.");
+      }
+
+      if (data.returnValue !== "success") {
+        return null;
+      }
+
+      const numbers = [
+        Number(data.drwtNo1),
+        Number(data.drwtNo2),
+        Number(data.drwtNo3),
+        Number(data.drwtNo4),
+        Number(data.drwtNo5),
+        Number(data.drwtNo6)
+      ];
+      const bonus = Number(data.bnusNo);
+      const round = Number(data.drwNo);
+
+      if (!Number.isInteger(round) || round <= 0 || numbers.some((n) => !Number.isInteger(n)) || !Number.isInteger(bonus)) {
+        return null;
+      }
+
+      return {
+        round,
+        date: String(data.drwNoDate || ""),
+        numbers: numbers.sort((a, b) => a - b),
+        bonus
+      };
+    }
+
+    async function fetchAllRoundsFrom(startRound) {
+      const collected = [];
+      let roundNo = startRound;
+      let failStreak = 0;
+
+      while (failStreak < 2) {
+        const roundData = await fetchLottoRound(roundNo);
+
+        if (!roundData) {
+          failStreak += 1;
+          roundNo += 1;
+          continue;
+        }
+
+        failStreak = 0;
+        collected.push(roundData);
+        roundNo += 1;
+
+        // 장시간 루프에서 브라우저가 멈춘 것처럼 보이지 않도록 주기적으로 양보한다.
+        if (collected.length % 20 === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+      }
+
+      return collected;
+    }
+
+    function renderStats() {
+      statsListEl.innerHTML = "";
+      const totalCount = state.statsHistory.length;
+      const visibleCount = Math.min(state.statsVisibleCount, totalCount);
+
+      if (state.statsLoading) {
+        const loadedCount = totalCount;
+        const loadingText = loadedCount > 0
+          ? `1회차부터 전체 회차 데이터를 확인 중입니다... (현재 ${loadedCount}회차 확보)`
+          : "1회차부터 전체 회차 데이터를 불러오는 중입니다...";
+        setStatsStatus(loadingText, "loading");
+      } else if (state.statsError) {
+        setStatsStatus(state.statsError, "warning");
+      } else if (state.statsWarning) {
+        setStatsStatus(state.statsWarning, "warning");
+      } else if (state.statsLoaded) {
+        if (visibleCount < totalCount) {
+          setStatsStatus(`총 ${totalCount}회차 중 최신 ${visibleCount}회차를 표시 중입니다. 아래로 스크롤하면 30개씩 더 표시됩니다.`);
+        } else {
+          setStatsStatus(`총 ${totalCount}회차 전체를 표시 중입니다.`);
+        }
+      } else {
+        setStatsStatus("통계 데이터를 아직 불러오지 않았습니다.");
+      }
+
+      const sortedByLatest = [...state.statsHistory].sort((a, b) => b.round - a.round);
+      const visibleRounds = sortedByLatest.slice(0, visibleCount);
+
+      if (visibleRounds.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "stats-empty";
+        empty.textContent = "표시할 통계 데이터가 없습니다.";
+        statsListEl.appendChild(empty);
+        statsSentinelEl.classList.add("hidden");
+        return;
+      }
+
+      visibleRounds.forEach((roundData) => {
+        const card = document.createElement("article");
+        card.className = "stats-item";
+
+        const head = document.createElement("div");
+        head.className = "stats-item-head";
+
+        const round = document.createElement("strong");
+        round.className = "stats-round";
+        round.textContent = `${roundData.round}회`;
+
+        const date = document.createElement("span");
+        date.className = "stats-date";
+        date.textContent = roundData.date;
+
+        const numberRow = document.createElement("div");
+        numberRow.className = "stats-number-row";
+
+        roundData.numbers.forEach((num) => {
+          const ball = document.createElement("span");
+          ball.className = `mini-ball ${getMiniBallRangeClass(num)}`;
+          ball.textContent = String(num);
+          numberRow.appendChild(ball);
+        });
+
+        const plus = document.createElement("span");
+        plus.className = "stats-plus";
+        plus.textContent = "+";
+
+        const bonusBall = document.createElement("span");
+        bonusBall.className = `mini-ball ${getMiniBallRangeClass(roundData.bonus)}`;
+        bonusBall.textContent = String(roundData.bonus);
+
+        numberRow.appendChild(plus);
+        numberRow.appendChild(bonusBall);
+        head.appendChild(round);
+        head.appendChild(date);
+        card.appendChild(head);
+        card.appendChild(numberRow);
+        statsListEl.appendChild(card);
+      });
+
+      if (visibleCount < totalCount) {
+        statsSentinelEl.classList.remove("hidden");
+        statsSentinelEl.textContent = `아래로 스크롤하면 이전 회차 30개를 더 표시합니다. (${visibleCount}/${totalCount})`;
+      } else {
+        statsSentinelEl.classList.remove("hidden");
+        statsSentinelEl.textContent = `모든 회차를 표시했습니다. (${totalCount}/${totalCount})`;
+      }
+    }
+
+    function expandStatsVisibleCount() {
+      if (state.statsLoading) {
+        return false;
+      }
+
+      const totalCount = state.statsHistory.length;
+      if (state.statsVisibleCount >= totalCount) {
+        return false;
+      }
+
+      state.statsVisibleCount = Math.min(totalCount, state.statsVisibleCount + STATS_PAGE_SIZE);
+      renderStats();
+      return true;
+    }
+
+    function getFrequencyTargetRounds() {
+      const latestSorted = [...state.statsHistory].sort((a, b) => b.round - a.round);
+      if (state.frequencyRange === "all") {
+        return latestSorted;
+      }
+
+      const count = Number(state.frequencyRange);
+      if (!Number.isInteger(count) || count <= 0) {
+        return latestSorted;
+      }
+
+      return latestSorted.slice(0, count);
+    }
+
+    function renderFrequency() {
+      frequencyListEl.innerHTML = "";
+
+      if (state.statsLoading) {
+        setFrequencyStatus("회차 데이터를 불러오는 중입니다...", "loading");
+        return;
+      }
+
+      if (state.statsError) {
+        setFrequencyStatus(state.statsError, "warning");
+        return;
+      }
+
+      if (state.statsHistory.length === 0) {
+        setFrequencyStatus("출현 횟수 데이터를 아직 불러오지 않았습니다.");
+        const empty = document.createElement("div");
+        empty.className = "stats-empty";
+        empty.textContent = "표시할 데이터가 없습니다.";
+        frequencyListEl.appendChild(empty);
+        return;
+      }
+
+      const targetRounds = getFrequencyTargetRounds();
+      const counts = Array(46).fill(0);
+
+      targetRounds.forEach((roundData) => {
+        roundData.numbers.forEach((num) => {
+          if (num >= 1 && num <= 45) {
+            counts[num] += 1;
+          }
+        });
+      });
+
+      const rows = [];
+      for (let num = 1; num <= 45; num += 1) {
+        rows.push({ number: num, count: counts[num] });
+      }
+
+      rows.sort((a, b) => {
+        if (b.count !== a.count) {
+          return b.count - a.count;
+        }
+        return a.number - b.number;
+      });
+
+      const rangeLabel = state.frequencyRange === "all"
+        ? "전체회차"
+        : `최근 ${state.frequencyRange}회차`;
+      const firstRound = targetRounds[targetRounds.length - 1]?.round;
+      const lastRound = targetRounds[0]?.round;
+      const warningSuffix = state.statsWarning ? ` (${state.statsWarning})` : "";
+      if (firstRound && lastRound) {
+        setFrequencyStatus(`${rangeLabel} 기준 (${firstRound}회~${lastRound}회) 출현 횟수입니다.${warningSuffix}`);
+      } else {
+        setFrequencyStatus(`${rangeLabel} 기준 출현 횟수입니다.${warningSuffix}`);
+      }
+
+      rows.forEach((row) => {
+        const cell = document.createElement("div");
+        cell.className = "frequency-cell";
+
+        const ball = document.createElement("span");
+        ball.className = `mini-ball ${getMiniBallRangeClass(row.number)}`;
+        ball.textContent = String(row.number);
+
+        const count = document.createElement("span");
+        count.className = "frequency-count-under";
+        count.textContent = `${row.count}회`;
+
+        cell.appendChild(ball);
+        cell.appendChild(count);
+        frequencyListEl.appendChild(cell);
+      });
+    }
+
+    function renderAbsence() {
+      absenceListEl.innerHTML = "";
+
+      if (state.statsLoading) {
+        setAbsenceStatus("회차 데이터를 불러오는 중입니다...", "loading");
+        return;
+      }
+
+      if (state.statsError) {
+        setAbsenceStatus(state.statsError, "warning");
+        return;
+      }
+
+      if (state.statsHistory.length === 0) {
+        setAbsenceStatus("미출현 번호 데이터를 아직 불러오지 않았습니다.");
+        const empty = document.createElement("div");
+        empty.className = "stats-empty";
+        empty.textContent = "표시할 데이터가 없습니다.";
+        absenceListEl.appendChild(empty);
+        return;
+      }
+
+      const latestSorted = [...state.statsHistory].sort((a, b) => b.round - a.round);
+      const rows = [];
+
+      for (let num = 1; num <= 45; num += 1) {
+        let missingWeeks = latestSorted.length;
+
+        for (let idx = 0; idx < latestSorted.length; idx += 1) {
+          if (latestSorted[idx].numbers.includes(num)) {
+            missingWeeks = idx;
+            break;
+          }
+        }
+
+        rows.push({ number: num, missingWeeks });
+      }
+
+      rows.sort((a, b) => {
+        if (b.missingWeeks !== a.missingWeeks) {
+          return b.missingWeeks - a.missingWeeks;
+        }
+        return a.number - b.number;
+      });
+
+      const latestRound = latestSorted[0]?.round;
+      const warningSuffix = state.statsWarning ? ` (${state.statsWarning})` : "";
+      if (latestRound) {
+        setAbsenceStatus(`최신 ${latestRound}회차 기준 미출현 기간(주) 순위입니다.${warningSuffix}`);
+      } else {
+        setAbsenceStatus(`미출현 기간(주) 순위입니다.${warningSuffix}`);
+      }
+
+      const maxMissingWeeks = rows[0]?.missingWeeks || 0;
+
+      rows.forEach((row) => {
+        const rowEl = document.createElement("div");
+        rowEl.className = "absence-row";
+
+        const ball = document.createElement("span");
+        ball.className = `mini-ball ${getMiniBallRangeClass(row.number)}`;
+        ball.textContent = String(row.number);
+
+        const track = document.createElement("div");
+        track.className = "absence-bar-track";
+
+        const fill = document.createElement("div");
+        fill.className = "absence-bar-fill";
+        const ratio = maxMissingWeeks === 0 ? 0 : (row.missingWeeks / maxMissingWeeks) * 100;
+        const visibleRatio = row.missingWeeks > 0 ? Math.max(ratio, 4) : 0;
+        fill.style.width = `${visibleRatio}%`;
+        track.appendChild(fill);
+
+        const missing = document.createElement("span");
+        missing.className = "absence-weeks";
+        missing.textContent = `${row.missingWeeks}주`;
+
+        rowEl.appendChild(ball);
+        rowEl.appendChild(track);
+        rowEl.appendChild(missing);
+        absenceListEl.appendChild(rowEl);
+      });
+    }
+
+    function initStatsInfiniteScroll() {
+      if (!statsSentinelEl || typeof IntersectionObserver !== "function") {
+        return;
+      }
+
+      statsObserver = new IntersectionObserver(
+        (entries) => {
+          const hit = entries.some((entry) => entry.isIntersecting);
+          if (!hit || state.activeMenu !== "stats") {
+            return;
+          }
+          expandStatsVisibleCount();
+        },
+        {
+          root: null,
+          rootMargin: "0px 0px 280px 0px",
+          threshold: 0
+        }
+      );
+
+      statsObserver.observe(statsSentinelEl);
+    }
+
+    async function ensureStatsDataLoaded() {
+      if (state.statsLoading) {
+        return;
+      }
+
+      if (state.statsVisibleCount < STATS_PAGE_SIZE) {
+        state.statsVisibleCount = STATS_PAGE_SIZE;
+      }
+
+      if (state.statsHistory.length === 0 && !state.statsLoaded) {
+        loadStatsCache();
+      }
+
+      if (state.statsHistory.length === 0 && !state.statsLoaded) {
+        try {
+          await loadStatsSnapshot();
+        } catch (_) {
+          // 스냅샷 로드 실패 시 공식 API만으로 계속 시도한다.
+        }
+      }
+
+      state.statsError = "";
+      state.statsWarning = "";
+      renderStats();
+      state.statsLoading = true;
+      renderStats();
+
+      try {
+        const startRound = state.statsHistory.length > 0
+          ? state.statsHistory[state.statsHistory.length - 1].round + 1
+          : 1;
+
+        const fetched = await fetchAllRoundsFrom(startRound);
+        if (fetched.length > 0) {
+          mergeStatsHistory(fetched);
+          saveStatsCache();
+        }
+
+        if (state.statsHistory.length === 0) {
+          state.statsError = "통계 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.";
+        } else {
+          state.statsLoaded = true;
+        }
+      } catch (error) {
+        if (state.statsHistory.length > 0) {
+          state.statsLoaded = true;
+          const lastRound = state.statsHistory[state.statsHistory.length - 1].round;
+          state.statsWarning = `동행복권 서버 응답 제한으로 저장된 데이터(${lastRound}회차 기준)를 표시합니다.`;
+        } else {
+          const isNetworkLike = error instanceof TypeError;
+          state.statsError = isNetworkLike
+            ? "통계 데이터를 불러오지 못했습니다. 네트워크 또는 CORS 제한을 확인해 주세요."
+            : String(error.message || "통계 데이터를 불러오지 못했습니다.");
+        }
+      } finally {
+        state.statsLoading = false;
+        renderStats();
+        renderFrequency();
+        renderAbsence();
+      }
+    }
+
+    // 생성 결과 번호를 5개 구간(1-10, 11-20, 21-30, 31-40, 41-45) 색상으로 매핑한다.
+    function getMiniBallRangeClass(number) {
+      if (number <= 10) return "range-1";
+      if (number <= 20) return "range-2";
+      if (number <= 30) return "range-3";
+      if (number <= 40) return "range-4";
+      return "range-5";
     }
 
     function renderResults() {
@@ -447,6 +1477,9 @@
         const row = document.createElement("div");
         row.className = "result-row";
 
+        const rowMain = document.createElement("div");
+        rowMain.className = "result-main";
+
         const label = document.createElement("span");
         label.className = "result-label";
         label.textContent = `${idx + 1}세트`;
@@ -456,13 +1489,21 @@
 
         set.forEach((number) => {
           const miniBall = document.createElement("span");
-          miniBall.className = "mini-ball";
+          miniBall.className = `mini-ball ${getMiniBallRangeClass(number)}`;
           miniBall.textContent = String(number);
           balls.appendChild(miniBall);
         });
 
-        row.appendChild(label);
-        row.appendChild(balls);
+        const rerollButton = document.createElement("button");
+        rerollButton.type = "button";
+        rerollButton.className = "reroll-btn";
+        rerollButton.dataset.index = String(idx);
+        rerollButton.textContent = "다시 생성";
+
+        rowMain.appendChild(label);
+        rowMain.appendChild(balls);
+        row.appendChild(rowMain);
+        row.appendChild(rerollButton);
         resultsEl.appendChild(row);
       });
     }
@@ -477,6 +1518,37 @@
       }
 
       return pool.slice(0, count);
+    }
+
+    // 현재 포함수/제외수 기준으로 번호 1세트를 만들 수 있는지 검증한다.
+    function getGenerationBase() {
+      const includeNumbers = [...state.includeSet];
+      const includeCount = includeNumbers.length;
+
+      if (includeCount > 6) {
+        return { ok: false, error: "포함수는 최대 6개까지 선택할 수 있습니다." };
+      }
+
+      const needed = 6 - includeCount;
+      const candidatePool = [];
+
+      for (let num = 1; num <= 45; num += 1) {
+        if (!state.includeSet.has(num) && !state.excludeSet.has(num)) {
+          candidatePool.push(num);
+        }
+      }
+
+      if (candidatePool.length < needed) {
+        return { ok: false, error: "포함수/제외수 조건으로는 번호를 6개 채울 수 없습니다." };
+      }
+
+      return { ok: true, includeNumbers, candidatePool, needed };
+    }
+
+    // 검증된 기반 정보에서 번호 1세트를 생성한다.
+    function buildOneSet(base) {
+      const randomNumbers = pickRandomUnique(base.candidatePool, base.needed);
+      return [...base.includeNumbers, ...randomNumbers].sort((a, b) => a - b);
     }
 
     // 번호 버튼 클릭 시 포함수/제외수 중복을 자동 해제해 충돌을 막는다.
@@ -509,39 +1581,66 @@
       renderBallSelections();
     }
 
-    function generateSets() {
-      const includeNumbers = [...state.includeSet];
-      const includeCount = includeNumbers.length;
-
-      if (includeCount > 6) {
-        state.resultSets = [];
-        renderResults();
-        showMessage("포함수는 최대 6개까지 선택할 수 있습니다.", "warning");
+    function clearNumberGroup(type) {
+      if (type === "include") {
+        state.includeSet.clear();
+      } else if (type === "exclude") {
+        state.excludeSet.clear();
+      } else {
         return;
       }
 
-      const needed = 6 - includeCount;
-      const candidatePool = [];
+      clearMessage();
+      renderBallSelections();
+    }
 
-      for (let num = 1; num <= 45; num += 1) {
-        if (!state.includeSet.has(num) && !state.excludeSet.has(num)) {
-          candidatePool.push(num);
-        }
+    function regenerateSingleSet(index) {
+      if (index < 0 || index >= state.resultSets.length) {
+        return;
       }
 
-      if (candidatePool.length < needed) {
+      const base = getGenerationBase();
+      if (!base.ok) {
+        showMessage(base.error, "warning");
+        return;
+      }
+
+      state.resultSets[index] = buildOneSet(base);
+      renderResults();
+      showMessage(`${index + 1}세트를 다시 생성했습니다.`, "info");
+    }
+
+    function handleResultActionClick(event) {
+      const target = event.target;
+      if (!(target instanceof HTMLButtonElement)) {
+        return;
+      }
+
+      if (!target.classList.contains("reroll-btn")) {
+        return;
+      }
+
+      const index = Number(target.dataset.index);
+      if (Number.isNaN(index)) {
+        return;
+      }
+
+      regenerateSingleSet(index);
+    }
+
+    function generateSets() {
+      const base = getGenerationBase();
+      if (!base.ok) {
         state.resultSets = [];
         renderResults();
-        showMessage("포함수/제외수 조건으로는 번호를 6개 채울 수 없습니다.", "warning");
+        showMessage(base.error, "warning");
         return;
       }
 
       const sets = [];
 
       for (let i = 0; i < 5; i += 1) {
-        const randomNumbers = pickRandomUnique(candidatePool, needed);
-        const oneSet = [...includeNumbers, ...randomNumbers].sort((a, b) => a - b);
-        sets.push(oneSet);
+        sets.push(buildOneSet(base));
       }
 
       state.resultSets = sets;
@@ -554,6 +1653,19 @@
         btn.addEventListener("click", () => {
           state.activeMenu = btn.dataset.menu || "generator";
           renderMenu();
+          if (
+            state.activeMenu === "stats"
+            || state.activeMenu === "frequency"
+            || state.activeMenu === "absence"
+          ) {
+            ensureStatsDataLoaded();
+          }
+          if (state.activeMenu === "frequency") {
+            renderFrequency();
+          }
+          if (state.activeMenu === "absence") {
+            renderAbsence();
+          }
         });
       });
     }
@@ -563,11 +1675,22 @@
       buildBallGrid(excludeGrid, "exclude");
       includeGrid.addEventListener("click", handleBallClick);
       excludeGrid.addEventListener("click", handleBallClick);
+      includeClearBtn.addEventListener("click", () => clearNumberGroup("include"));
+      excludeClearBtn.addEventListener("click", () => clearNumberGroup("exclude"));
       generateBtn.addEventListener("click", generateSets);
+      resultsEl.addEventListener("click", handleResultActionClick);
+      frequencyRangeEl.addEventListener("change", () => {
+        state.frequencyRange = frequencyRangeEl.value;
+        renderFrequency();
+      });
       initMenu();
+      initStatsInfiniteScroll();
       renderMenu();
       renderBallSelections();
       renderResults();
+      renderStats();
+      renderFrequency();
+      renderAbsence();
     }
 
     init();
