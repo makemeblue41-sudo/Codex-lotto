@@ -1,0 +1,45 @@
+name: Update Lotto History
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Sat 21:05, 21:15, 21:30 KST == Sat 12:05, 12:15, 12:30 UTC
+    - cron: "5 12 * * 6"
+    - cron: "15 12 * * 6"
+    - cron: "30 12 * * 6"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-lotto-history
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Update history files
+        run: node scripts/update-lotto-history.mjs
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- lotto-history.json lotto-history-snapshot.js; then
+            echo "No file changes."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lotto-history.json lotto-history-snapshot.js
+          git commit -m "chore: update lotto history data"
+          git push
