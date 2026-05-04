@@ -1,11 +1,11 @@
 :root {
-  --bg: #f4a8b8;
-  --panel: #f6f6f7;
-  --text: #1f2026;
-  --muted: #626b7a;
-  --border: #d9dde4;
-  --accent: #e7335b;
-  --shadow: 0 14px 28px rgba(115, 19, 48, 0.16);
+  --bg: #eb3a5e;
+  --panel: #f5f6f8;
+  --text: #1f2430;
+  --muted: #5f6879;
+  --border: #ced5df;
+  --accent: #d7264f;
+  --shadow: 0 14px 28px rgba(105, 22, 46, 0.2);
 }
 
 * {
@@ -18,8 +18,8 @@ body {
   color: var(--text);
   background-color: var(--bg);
   background-image:
-    radial-gradient(circle at 24px 24px, rgba(170, 28, 72, 0.16) 0 32px, transparent 33px),
-    radial-gradient(circle at 72px 72px, rgba(255, 255, 255, 0.09) 0 6px, transparent 7px);
+    radial-gradient(circle at 24px 24px, rgba(188, 20, 62, 0.32) 0 34px, transparent 35px),
+    radial-gradient(circle at 72px 72px, rgba(255, 255, 255, 0.16) 0 7px, transparent 8px);
   background-size: 160px 160px;
 }
 
@@ -32,7 +32,7 @@ body {
   width: min(980px, 100%);
   margin: 0 auto;
   padding: clamp(16px, 2.5vw, 24px);
-  border: 1px solid #e2e5ea;
+  border: 1px solid #dbe1e9;
   border-radius: 20px;
   background: var(--panel);
   box-shadow: var(--shadow);
@@ -142,10 +142,10 @@ li + li {
   margin-top: 12px;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid #f0c1cc;
+  border: 1px solid #f1c2cd;
   background: #fff4f7;
   font-size: 0.82rem;
-  color: #8d2d45;
+  color: #842842;
   line-height: 1.5;
 }
 
