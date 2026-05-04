@@ -3,7 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>로또번호 추첨기</title>
+  <title>로또번호 추첨기 | 통계 기반 번호 생성</title>
+  <meta name="description" content="포함수·제외수 기반 로또 번호 생성기와 역대 당첨번호, 출현 횟수, 미출현 번호 통계를 제공합니다.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="author" content="로또번호 추첨기 운영팀">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="로또번호 추첨기 | 통계 기반 번호 생성">
+  <meta property="og:description" content="로또 번호 생성과 회차 통계를 한 번에 확인할 수 있는 정보형 도구 페이지입니다.">
+  <meta property="og:locale" content="ko_KR">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "로또번호 추첨기",
+      "description": "로또 번호 생성과 통계를 제공하는 정보형 웹사이트",
+      "inLanguage": "ko-KR"
+    }
+  </script>
   <style>
     :root {
       --ui-scale: 1.3;
@@ -551,6 +567,139 @@
       width: 100%;
     }
 
+    .site-guide-divider {
+      margin-top: 16px;
+      height: 1px;
+      width: 100%;
+      background: var(--border);
+    }
+
+    .site-guide {
+      margin-top: 16px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #f1f3f6;
+      display: grid;
+      gap: 12px;
+    }
+
+    .guide-intro {
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fcfdff;
+    }
+
+    .guide-intro-title {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #2e3748;
+    }
+
+    .guide-intro p {
+      margin: 0;
+      color: #495266;
+      line-height: 1.55;
+      font-size: 0.84rem;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .guide-card {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fafbfc;
+    }
+
+    .guide-card-title {
+      margin: 0 0 8px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #2f3850;
+    }
+
+    .guide-list {
+      margin: 0;
+      padding-left: 16px;
+      color: #4a556b;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .guide-list li + li {
+      margin-top: 4px;
+    }
+
+    .guide-policy-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .guide-policy-links a {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #d3d9e2;
+      background: #ffffff;
+      color: #4f596d;
+      text-decoration: none;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .guide-policy-links a:hover {
+      background: #f1f4f8;
+      border-color: #c5cedb;
+    }
+
+    .site-footer {
+      width: 100%;
+      margin: 0;
+      padding: 12px 0 0;
+      border-radius: 0;
+      border: none;
+      border-top: 1px solid var(--border);
+      background: transparent;
+      color: #566074;
+      box-shadow: none;
+    }
+
+    .site-footer-title {
+      margin: 0 0 8px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #313a4e;
+    }
+
+    .site-footer p {
+      margin: 0;
+      font-size: 0.77rem;
+      line-height: 1.5;
+    }
+
+    .footer-links {
+      margin-top: 8px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: #4b5872;
+      font-size: 0.77rem;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
     /* 화면 높이가 낮은 데스크톱에서 스크롤 없이 버튼까지 보이도록 추가 압축한다. */
     @media (min-width: 901px) and (max-height: 920px) {
       .sidebar {
@@ -734,6 +883,14 @@
       .frequency-list {
         grid-template-columns: repeat(5, minmax(0, 1fr));
       }
+
+      .guide-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .site-footer {
+        border-radius: 0;
+      }
     }
 
     @media (max-width: 480px) {
@@ -800,6 +957,59 @@
             <p class="group-hint">버튼을 누를 때마다 최신 5세트를 표시합니다.</p>
             <div id="results" class="results" aria-label="생성 결과"></div>
           </div>
+        </div>
+
+        <div class="site-guide-divider" aria-hidden="true"></div>
+        <div class="site-guide" aria-label="사이트 안내">
+          <div class="guide-intro">
+            <h3 class="guide-intro-title">사이트 소개 및 운영 원칙</h3>
+            <p>
+              이 사이트는 로또 번호 추천 자체보다, 사용자가 번호를 스스로 관리하고 통계를 해석할 수 있도록 돕는 정보형 도구를 목표로 운영합니다.
+              특정 번호의 당첨을 보장하지 않으며, 회차 데이터는 동행복권 공개 형식에 맞춰 수집한 통계를 기반으로 제공합니다.
+              모든 콘텐츠는 광고 노출 유무와 무관하게 먼저 읽을 가치가 있도록 작성하고, 정책/문의/이용 조건을 별도 페이지에서 투명하게 공개합니다.
+            </p>
+          </div>
+
+          <div class="guide-grid">
+            <article class="guide-card">
+              <h4 class="guide-card-title">번호 생성 가이드</h4>
+              <ul class="guide-list">
+                <li>포함수는 반드시 넣고 싶은 번호만 1~6개 선택합니다.</li>
+                <li>제외수는 최근 패턴상 피하고 싶은 번호만 선택합니다.</li>
+                <li>생성된 5세트는 참고용이며, 실제 구매 전 중복/예산을 확인하세요.</li>
+                <li>한 주의 결과만 보지 말고 최소 10회차 이상 통계와 함께 해석하세요.</li>
+              </ul>
+            </article>
+
+            <article class="guide-card">
+              <h4 class="guide-card-title">콘텐츠 품질 원칙</h4>
+              <ul class="guide-list">
+                <li>자동 수집 데이터만 나열하지 않고 사용법과 해석 방법을 함께 제공합니다.</li>
+                <li>광고 배치를 위해 메뉴/다운로드처럼 오해될 수 있는 UI를 사용하지 않습니다.</li>
+                <li>개인정보 처리방침, 이용약관, 문의 페이지를 항상 하단에서 접근 가능하게 유지합니다.</li>
+                <li>정확하지 않은 수치 표현이나 과장된 수익·당첨 문구를 사용하지 않습니다.</li>
+                <li>AdSense 등록 시 사이트 소유권 메타 태그와 ads.txt 설정을 실제 발급 ID로 반영합니다.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="guide-policy-links">
+            <a href="./about.html">사이트 소개</a>
+            <a href="./privacy.html">개인정보처리방침</a>
+            <a href="./terms.html">이용약관</a>
+            <a href="./contact.html">문의하기</a>
+          </div>
+
+          <footer class="site-footer">
+            <h3 class="site-footer-title">정책 및 운영정보</h3>
+            <p>본 사이트는 정보 제공 목적의 번호 생성/통계 도구이며, 당첨 결과를 보장하지 않습니다.</p>
+            <div class="footer-links">
+              <a href="./about.html">사이트 소개</a>
+              <a href="./privacy.html">개인정보처리방침</a>
+              <a href="./terms.html">이용약관</a>
+              <a href="./contact.html">문의하기</a>
+            </div>
+          </footer>
         </div>
       </section>
 
