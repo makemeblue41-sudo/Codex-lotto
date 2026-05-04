@@ -1468,8 +1468,7 @@
       } catch (error) {
         if (state.statsHistory.length > 0) {
           state.statsLoaded = true;
-          const lastRound = state.statsHistory[state.statsHistory.length - 1].round;
-          state.statsWarning = `동행복권 서버 응답 제한으로 저장된 데이터(${lastRound}회차 기준)를 표시합니다.`;
+          state.statsWarning = "";
         } else {
           const isNetworkLike = error instanceof TypeError;
           state.statsError = isNetworkLike
