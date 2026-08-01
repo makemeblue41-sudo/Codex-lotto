@@ -1,7 +1,7 @@
 {
   "source": "snapshot",
-  "generatedAt": "2026-07-25T14:09:28.339Z",
-  "roundCount": 1234,
+  "generatedAt": "2026-08-01T13:47:59.807Z",
+  "roundCount": 1235,
   "rounds": [
     {
       "round": 1,
@@ -16044,6 +16044,19 @@
         43
       ],
       "bonus": 27
+    },
+    {
+      "round": 1235,
+      "date": "2026-08-01",
+      "numbers": [
+        6,
+        7,
+        11,
+        15,
+        39,
+        43
+      ],
+      "bonus": 20
     }
   ]
 }
